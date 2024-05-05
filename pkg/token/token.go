@@ -1,5 +1,5 @@
 package token
 
 type Verifier interface {
-	Verify(token string) error
+	Verify(str string, modUser string) error
 }

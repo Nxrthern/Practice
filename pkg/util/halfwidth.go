@@ -15,3 +15,12 @@ func SpacesOrControlCodes(s string) bool {
 	}
 	return false
 }
+
+func ValidString(s string) bool {
+	for _, char := range s {
+		if char < 32 && char != '\t' && char != '\n' && char != '\r' {
+			return false
+		}
+	}
+	return true
+}

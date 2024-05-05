@@ -1,32 +1,43 @@
 package middleware
 
 import (
-	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"practice/pkg/responses"
 	"practice/pkg/token"
-	"regexp"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
 
-var rx = regexp.MustCompile(`(?i)^Bearer (.*)?$`)
-
 func WithAuth(verifier token.Verifier) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if req.URL.Path == "/health" {
+			if req.URL.Path == "/health" || req.URL.Path == "/signup" {
 				next.ServeHTTP(w, req)
 				return
 			}
 
-			header, err := getAuthHeader(req)
-			ValidateSecretKey(&header)
+			header, _ := GetAuthHeader(req)
+			basic, _ := strings.CutPrefix(header, "Basic")
+			trimmed := strings.TrimSpace(basic)
+
+			vars := mux.Vars(req)
+			var err error
+			if vars["user_id"] != "" {
+				err = verifier.Verify(trimmed, vars["user_id"])
+			} else {
+				err = verifier.Verify(trimmed, "")
+			}
+
 			if err != nil {
-				http.Error(w, "Unauthorized", 401)
+				if err.Error() == "Denied" {
+					WriteResponse(w, map[string]string{"message": "No permission for update"}, 403)
+					return
+				}
+
+				WriteResponse(w, map[string]string{"message": "Authentication failed"}, 401)
 				return
 			}
 
@@ -35,21 +46,7 @@ func WithAuth(verifier token.Verifier) mux.MiddlewareFunc {
 	}
 }
 
-func ValidateSecretKey(token *string) error {
-	apiKey, err := base64.StdEncoding.DecodeString(*token)
-	if err != nil {
-		return errors.New("Unauthorized")
-	}
-
-	//TODO
-	if apiKey != nil {
-		return nil
-	} else {
-		return errors.New("Unauthorized")
-	}
-}
-
-func getAuthHeader(req *http.Request) (string, error) {
+func GetAuthHeader(req *http.Request) (string, error) {
 	return req.Header.Get("Authorization"), nil
 }
 

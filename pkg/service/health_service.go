@@ -2,8 +2,7 @@ package service
 
 import (
 	"context"
-
-	rpmonitoring "gitlab-payment.intra.rakuten-it.com/unbreakable/rpay-golang-common/monitoring"
+	"fmt"
 )
 
 type HealthService interface {
@@ -18,7 +17,6 @@ type healthService struct {
 }
 
 func (s *healthService) Up(ctx context.Context) error {
-	logger := rpmonitoring.GetTracingLogger(ctx)
-	logger.Info().Msg("Test")
+	fmt.Println("Test")
 	return nil
 }

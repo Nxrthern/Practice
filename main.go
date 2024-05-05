@@ -36,8 +36,9 @@ func init() {
 }
 
 func main() {
-	h := handler.NewHTTPHandler(service.NewHealthService(), service.NewAccountService())
-	h = middleware.WithAuth(token.NewJwTVerifier())(h)
+	asvc := service.NewAccountService()
+	h := handler.NewHTTPHandler(asvc)
+	h = middleware.WithAuth(token.NewJwTVerifier(asvc))(h)
 
 	fmt.Printf("Sub is running on port 8080")
 	if err := http.ListenAndServe(":8080", &maxBytesHandler{h: h, n: 4 << 20}); err != nil {
