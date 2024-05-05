@@ -1,0 +1,15 @@
+ci/terraform/.terraform.lock.hcl
+ci/terraform/.terraform/
+ci/terraform/rpay-subscription
+ci/terraform/terraform.tfstate
+ci/terraform/terraform.tfstate.backup
+**/tmp/*
+bin/
+build/app
+local/app
+local/init.sql
+*.out
+*.DS_Store
+ci/terraform/terraform.tfstate.backup
+.docker-compose-up-done
+.vscode
