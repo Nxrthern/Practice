@@ -37,7 +37,7 @@ func WithAuth(verifier token.Verifier) mux.MiddlewareFunc {
 					return
 				}
 
-				WriteResponse(w, map[string]string{"message": "Authentication failed"}, 401)
+				WriteResponse(w, map[string]string{"message": "Authentication Failed"}, 401)
 				return
 			}
 
