@@ -14,7 +14,14 @@ type accountService struct {
 }
 
 func NewAccountService() AccountService {
-	userData := map[string]interface{}{}
+	userData := map[string]interface{}{
+		"TaroYamada": map[string]interface{}{
+			"user_id":  "TaroYamada",
+			"password": "PaSSwd4TY",
+			"comment":  "I'm happy.",
+			"nickname": "Taro",
+		},
+	}
 	return &accountService{
 		userData: userData,
 	}

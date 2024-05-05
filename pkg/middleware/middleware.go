@@ -25,7 +25,7 @@ func WithAuth(verifier token.Verifier) mux.MiddlewareFunc {
 
 			vars := mux.Vars(req)
 			var err error
-			if vars["user_id"] != "" {
+			if vars["user_id"] != "" && req.Method == "PATCH" {
 				err = verifier.Verify(trimmed, vars["user_id"])
 			} else {
 				err = verifier.Verify(trimmed, "")

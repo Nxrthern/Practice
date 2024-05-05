@@ -22,8 +22,15 @@ func NewHTTPHandler(asvc service.AccountService) http.Handler {
 	router.HandleFunc("/signup", getSignUpHandler(asvc))
 	router.HandleFunc("/users/{user_id}", getUsersHandler(asvc))
 	router.HandleFunc("/close", getCloseHandler(asvc))
+	router.HandleFunc("/", getDefaultHandler())
 
 	return router
+}
+
+func getDefaultHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		middleware.WriteResponse(w, &responses.ErrorMessage{Message: "Not found"}, 404)
+	}
 }
 
 func getSignUpHandler(accountService service.AccountService) http.HandlerFunc {
